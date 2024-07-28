@@ -1,0 +1,16 @@
+.header {
+  display: flex;
+  & nav {
+    flex: 1;
+    border-bottom: 1px solid #e1e1e1;
+    & ul {
+      display: flex;
+      gap: 16px;
+      list-style: none;
+    }
+  }
+}
+
+.outlet {
+  padding: 8px;
+}
