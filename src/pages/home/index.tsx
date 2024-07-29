@@ -12,10 +12,16 @@ type DataEntity = {
   totalCount: number;
 };
 
-function Home() {
-  const [data, setdata] = useState<DataEntity>();
+function Home({ initialData }: { initialData?: any }) {
+  const [data, setdata] = useState<DataEntity>(initialData);
   const [activePage, setPage] = useState(1);
+  const [firstRender, setfirstRender] = useState(true);
   useEffect(() => {
+    if (activePage === 1 && data.totalCount && firstRender) {
+      setfirstRender(false);
+      return;
+    }
+
     fetch(
       "http://localhost:8628/api/transactions/?" +
         new URLSearchParams({
@@ -38,7 +44,7 @@ function Home() {
             <Table.Th>Row</Table.Th>
             <Table.Th>First Name</Table.Th>
             <Table.Th>Last Name</Table.Th>
-            <Table.Th>Price</Table.Th>
+            <Table.Th>Fee ($)</Table.Th>
             <Table.Th>Date</Table.Th>
           </Table.Tr>
         </Table.Thead>

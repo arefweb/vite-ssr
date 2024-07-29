@@ -7,18 +7,17 @@ import Home from './pages/home';
 import About from "./pages/about";
 import Dashboard from './pages/dashboard';
 
-function App() {
-
+function App({ initialData }: { initialData?: any }) {
   return (
-     <MantineProvider>
+    <MantineProvider>
       <Routes>
         <Route path="/" element={<Layout />}>
-          <Route index element={<Home />} />
+          <Route index element={<Home initialData={initialData} />} />
           <Route path="about" element={<About />} />
           <Route path="dashboard" element={<Dashboard />} />
         </Route>
       </Routes>
-     </MantineProvider>
+    </MantineProvider>
   );
 }
 

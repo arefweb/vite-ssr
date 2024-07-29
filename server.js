@@ -1,5 +1,8 @@
 import fs from "node:fs/promises";
 import express from "express";
+import fetch from "node-fetch";
+import dns from "node:dns";
+dns.setDefaultResultOrder("ipv4first");
 
 // Constants
 const isProduction = process.env.NODE_ENV === "production";
@@ -51,11 +54,33 @@ app.use("*", async (req, res) => {
       render = (await import("./dist/server/entry-server.js")).render;
     }
 
-    const rendered = await render({ path: req.originalUrl }, ssrManifest);
+    let initialData = {};
+
+    if (req.url === "/") {
+      const response = await fetch(
+        "http://localhost:8628/api/transactions/?" +
+          new URLSearchParams({
+            page: "1",
+            limit: "10",
+          })
+      );
+      initialData = await response.json();
+    }
+
+    const rendered = await render(
+      { path: req.originalUrl, initialData },
+      ssrManifest
+    );
 
     const html = template
       .replace(`<!--app-head-->`, rendered.head ?? "")
-      .replace(`<!--app-html-->`, rendered.html ?? "");
+      .replace(`<!--app-html-->`, rendered.html ?? "")
+      .replace(
+        `<!--app-data-->`,
+        `<script>window.__INITIAL_DATA__ = ${JSON.stringify(
+          initialData
+        )}</script>`
+      );
 
     res.status(200).set({ "Content-Type": "text/html" }).send(html);
   } catch (e) {
