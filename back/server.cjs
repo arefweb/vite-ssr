@@ -5,7 +5,7 @@ const transactions = require("./data.cjs");
 const app = express();
 const PORT = 8628;
 
-app.use(cors({ origin: 'http://localhost:5272' }));
+app.use(cors({ origin: '*' }));
 app.use(express.json());
 
 app.get("/api/transactions/", (req, res) => {
